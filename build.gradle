@@ -1,0 +1,22 @@
+plugins { id 'java-library'; id 'net.neoforged.moddev' version '2.0.148' }
+group = 'com.illusivesoulworks.caelus'
+version = '8.0.1-port.1+26.3'
+base { archivesName = 'caelus-neoforge' }
+java { toolchain.languageVersion = JavaLanguageVersion.of(25); withSourcesJar() }
+sourceSets.main {
+    java.srcDirs = ['neoforge/src/main/java','common/src/main/java']
+    resources.srcDirs = ['neoforge/src/main/resources','common/src/main/resources','neoforge/src/generated/resources']
+}
+neoForge {
+    version = '26.3.0.118'
+    runs { client { client() }; server { server(); programArgument '--nogui' } }
+    mods { caelus { sourceSet sourceSets.main } }
+}
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.processResources {
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand(version: project.version, license: 'LGPL-3.0-or-later', issues_url: 'https://github.com/TheIllusiveC4/Caelus/issues', mod_id: 'caelus', mod_name: 'Caelus API', sources_url: 'https://github.com/TheIllusiveC4/Caelus', mod_author: 'Illusive Soulworks', description: 'An API for elytra fall flying mechanics. Unofficial port.', neoforge_version_range: '[26.3.0.118,27)', minecraft_version_range: '[26.3,26.4)')
+    }
+    from('COPYING','COPYING.LESSER','LICENSE')
+}
+tasks.named('sourcesJar') { from('COPYING','COPYING.LESSER','LICENSE') }
